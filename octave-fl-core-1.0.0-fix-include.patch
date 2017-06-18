@@ -1,0 +1,16 @@
+--- src/fl_compose.cc
++++ src/fl_compose.cc
+@@ -21,6 +21,12 @@
+ #include <octave/oct.h>
+ #include <octave/parse.h>
+ #include <pthread.h>    
++
++#ifdef WIN32
++ #include <windows.h>
++#else
++ #include <unistd.h>
++#endif
+ 
+ #define HELP \
+ "-*- texinfo -*-\n\
+  @deftypefn{Loadable Function} {@var{res} = } fl_compose(@var{A}, @var{B}) \n\
