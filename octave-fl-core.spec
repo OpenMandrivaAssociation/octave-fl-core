@@ -1,11 +1,5 @@
 %define octpkg fl-core
 
-# fix debuginfo-without-sources
-%define debug_package %{nil}
-
-# Exclude .oct files from provides
-%define __provides_exclude_from ^%{octpkglibdir}/.*.oct$
-
 Summary:	The package contains code for basic functions in Fuzzy Logic for Octave
 Name:		octave-%{octpkg}
 Version:	1.0
@@ -29,20 +23,31 @@ The package contains code for basic functions in Fuzzy Logic for Octave.
 
 This package is part of unmantained Octave-Forge collection.
 
-%prep
-%setup -q -c %{octpkg}-%{version}
-cp %SOURCE0 .
+%files
+%license COPYING
+%doc NEWS
+%dir %{octpkglibdir}
+%{octpkglibdir}/*
+%dir %{octpkgdir}
+%{octpkgdir}/*
 
-# Apply patch
-pushd %{octpkg}
-%patch0 -p0
-popd
+#---------------------------------------------------------------------------
+
+%prep
+%autosetup -p1 -n %{octpkg}
+
+# remove backup files
+find . -name \*~ -delete
 
 %build
-%octave_pkg_build #-T
+%set_build_flags
+%octave_pkg_build
 
 %install
 %octave_pkg_install
+
+%check
+%octave_pkg_check
 
 %post
 %octave_cmd pkg rebuild
@@ -52,12 +57,3 @@ popd
 
 %postun
 %octave_cmd pkg rebuild
-
-%files
-%dir %{octpkglibdir}
-%{octpkglibdir}/*
-%dir %{octpkgdir}
-%{octpkgdir}/*
-#doc %{octpkg}/NEWS
-%doc %{octpkg}/COPYING
-
